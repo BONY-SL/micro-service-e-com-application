@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Details</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 400;
+            line-height: 1.7;
+            background-color: #EEF0F5;
+            background-image:
+                    radial-gradient(ellipse at 20% 20%, rgba(0, 82, 204, 0.06) 0%, transparent 60%),
+                    radial-gradient(ellipse at 80% 80%, rgba(0, 180, 140, 0.05) 0%, transparent 60%);
+            min-height: 100vh;
+            padding: 40px 16px;
+            color: #1a1d2e;
+        }
+
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 20px;
+            box-shadow:
+                    0 4px 6px rgba(0, 0, 0, 0.04),
+                    0 20px 60px rgba(0, 0, 0, 0.10),
+                    0 1px 0px rgba(255,255,255,0.9) inset;
+            overflow: hidden;
+        }
+
+        /* ── Header Banner ── */
+        .header-banner {
+            background: linear-gradient(135deg, #0038a8 0%, #0061f2 60%, #00b48c 100%);
+            padding: 36px 40px 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-banner::before {
+            content: '';
+            position: absolute;
+            top: -40px; right: -40px;
+            width: 200px; height: 200px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+        }
+
+        .header-banner::after {
+            content: '';
+            position: absolute;
+            bottom: -60px; left: 30%;
+            width: 280px; height: 280px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.04);
+        }
+
+        h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2rem;
+            font-weight: 400;
+            color: #ffffff;
+            letter-spacing: -0.02em;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ── Content Area ── */
+        .content {
+            padding: 36px 40px;
+        }
+
+        /* ── Meta Info ── */
+        .meta-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .meta-card {
+            background: #f7f8fc;
+            border: 1px solid #e8eaf2;
+            border-radius: 12px;
+            padding: 16px 20px;
+        }
+
+        .meta-card .label {
+            font-size: 0.70rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #8a90a8;
+            margin-bottom: 4px;
+        }
+
+        .meta-card .value {
+            font-size: 0.97rem;
+            font-weight: 600;
+            color: #1a1d2e;
+        }
+
+        /* ── Table ── */
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e8eaf2;
+        }
+
+        thead tr {
+            background: linear-gradient(90deg, #0052cc 0%, #0061f2 100%);
+        }
+
+        th {
+            padding: 14px 18px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.09em;
+            color: rgba(255, 255, 255, 0.92);
+            text-align: left;
+        }
+
+        th:last-child {
+            text-align: right;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #eef0f7;
+            transition: background 0.15s ease;
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #fafbff;
+        }
+
+        tbody tr:hover {
+            background-color: #f0f4ff;
+        }
+
+        td {
+            padding: 14px 18px;
+            font-size: 0.90rem;
+            color: #3a3f5c;
+            vertical-align: middle;
+        }
+
+        td:last-child {
+            text-align: right;
+            font-weight: 600;
+            color: #0052cc;
+        }
+
+        /* ── Footer ── */
+        .footer {
+            margin: 32px 0 0;
+            padding: 28px 40px;
+            background: #f7f8fc;
+            border-top: 1px solid #e8eaf2;
+        }
+
+        .total-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(135deg, #0038a8 0%, #0061f2 100%);
+            border-radius: 12px;
+            padding: 18px 24px;
+            margin-bottom: 20px;
+        }
+
+        .total-label {
+            font-size: 0.80rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.09em;
+            color: rgba(255,255,255,0.75);
+        }
+
+        .total-amount {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.55rem;
+            color: #ffffff;
+            letter-spacing: -0.01em;
+        }
+
+        .footer-note {
+            font-size: 0.78rem;
+            color: #9298b0;
+            text-align: center;
+            line-height: 1.8;
+        }
+
+        .footer-note p + p {
+            margin-top: 2px;
+        }
+
+        .footer-note .copyright {
+            font-weight: 600;
+            color: #6b72a0;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 520px) {
+            .header-banner, .content {
+                padding: 28px 24px;
+            }
+
+            .footer {
+                padding: 24px;
+            }
+
+            h1 {
+                font-size: 1.6rem;
+            }
+
+            .meta-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .total-row {
+                flex-direction: column;
+                gap: 6px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <div class="header-banner">
+        <h1>Order Details</h1>
+    </div>
+
+    <div class="content">
+
+        <div class="meta-grid">
+            <div class="meta-card">
+                <div class="label">Customer</div>
+                <div class="value"><span th:text="${customerName}"></span></div>
+            </div>
+            <div class="meta-card">
+                <div class="label">Order ID</div>
+                <div class="value"><span th:text="${orderReference}"></span></div>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Price</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="product : ${products}">
+                <td th:text="${product.name}"></td>
+                <td th:text="${product.quantity}"></td>
+                <td th:text="${product.price}"></td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <div class="footer">
+        <div class="total-row">
+            <span class="total-label">Total Amount</span>
+            <span class="total-amount">$<span th:text="${totalAmount}"></span></span>
+        </div>
+        <div class="footer-note">
+            <p>This is an automated message. Please do not reply to this email.</p>
+            <p class="copyright">&copy; 2026 Dilshan Pathirage. All rights reserved.</p>
+        </div>
+    </div>
+
+</div>
+</body>
+
+</html>
