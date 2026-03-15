@@ -6,6 +6,8 @@ import com.diphlk.ecommerce.kafka.OrderConfirmation;
 import com.diphlk.ecommerce.kafka.OrderProducer;
 import com.diphlk.ecommerce.orderline.OrderLineRequest;
 import com.diphlk.ecommerce.orderline.OrderLineService;
+import com.diphlk.ecommerce.payment.PaymentClient;
+import com.diphlk.ecommerce.payment.PaymentRequest;
 import com.diphlk.ecommerce.product.ProductClient;
 import com.diphlk.ecommerce.product.PurchaseRequest;
 import jakarta.persistence.EntityNotFoundException;
@@ -24,6 +26,7 @@ public class OrderService {
     private final OrderMapper mapper;
     private final OrderLineService orderLineService;
     private final OrderProducer orderProducer;
+    private final PaymentClient paymentClient;
 
     public Integer createOrder(OrderRequest orderRequest) {
         // check the customer --> OpenFeign client to customer microservice
@@ -47,7 +50,15 @@ public class OrderService {
                     )
             );
         }
-        // todo start the payment process
+        //  start the payment process
+        var paymentRequest = new PaymentRequest(
+                orderRequest.amount(),
+                orderRequest.paymentMethod(),
+                order.getId(),
+                orderRequest.reference(),
+                customer
+        );
+        paymentClient.requestOrderPayment(paymentRequest);
 
         // send the order confirmation --> notification microservice (kafka)
         orderProducer.sendOrderConfirmation(
