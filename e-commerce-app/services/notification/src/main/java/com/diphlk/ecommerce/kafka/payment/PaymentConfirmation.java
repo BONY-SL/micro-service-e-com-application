@@ -1,5 +1,7 @@
 package com.diphlk.ecommerce.kafka.payment;
 
+import org.springframework.data.annotation.PersistenceCreator;
+
 import java.math.BigDecimal;
 
 public record PaymentConfirmation(
@@ -10,4 +12,7 @@ public record PaymentConfirmation(
         String customerLastName,
         String customerEmail
 ) {
+    @PersistenceCreator
+    public PaymentConfirmation {
+    }
 }

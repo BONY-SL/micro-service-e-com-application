@@ -22,7 +22,7 @@ public class ProductClient {
 
     @Value("${application.config.product-url}")
     private String productServiceUrl;
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
     public List<PurchaseResponse> purchaseProducts(List<PurchaseRequest> purchaseRequestList){
         HttpHeaders headers = new HttpHeaders();
